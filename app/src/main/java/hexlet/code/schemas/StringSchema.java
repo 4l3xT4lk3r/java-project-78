@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public final class StringSchema {
+public final class StringSchema extends BaseSchema {
     private boolean notNullNotEmpty = false;
     private int minLength = 0;
     private List<String> substrings = new ArrayList<>();
