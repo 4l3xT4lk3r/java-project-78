@@ -16,6 +16,12 @@ dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter'
 }
 
+jacocoTestReport {
+    reports {
+        xml.required = true
+    }
+}
+
 compileJava {
     options.release = 17
 }
