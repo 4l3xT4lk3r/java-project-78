@@ -6,6 +6,8 @@ import java.util.Objects;
 import java.util.stream.Stream;
 
 public final class MapSchema extends BaseSchema {
+
+    private boolean dataCanBeNull = true;
     private int mapSize = -1;
     private Map<String, BaseSchema> valuesSchemas = new HashMap<>();
 
@@ -16,6 +18,15 @@ public final class MapSchema extends BaseSchema {
         }
         Map<Object, Object> map = (data == null) ? null : (Map) data;
         return checkDataForNull(map) && checkMapForSize(map) && checkMapValuesForSchemas(map);
+    }
+
+    public boolean checkDataForNull(Object data) {
+        return dataCanBeNull || data != null;
+    }
+
+    public MapSchema required() {
+        dataCanBeNull = false;
+        return this;
     }
 
     public MapSchema shape(Map<String, BaseSchema> schemas) {

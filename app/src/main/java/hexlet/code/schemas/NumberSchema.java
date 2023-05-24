@@ -4,6 +4,8 @@ import java.util.Objects;
 
 public final class NumberSchema extends BaseSchema {
 
+    private boolean dataCanBeNull = true;
+
     private boolean numberMustBePositive = false;
 
     private int[] withinRange;
@@ -11,6 +13,15 @@ public final class NumberSchema extends BaseSchema {
     public NumberSchema positive() {
         numberMustBePositive = true;
         return this;
+    }
+
+    public NumberSchema required() {
+        dataCanBeNull = false;
+        return this;
+    }
+
+    public boolean checkDataForNull(Object data) {
+        return dataCanBeNull || data != null;
     }
 
     public NumberSchema range(int minNumber, int maxNumber) {

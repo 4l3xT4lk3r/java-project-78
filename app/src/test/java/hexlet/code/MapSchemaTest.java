@@ -51,5 +51,12 @@ public class MapSchemaTest {
         human4.put("name", "Valya");
         human4.put("age", Integer.MIN_VALUE);
         assertFalse(schema.isValid(human4));
+
+        Map<String, Object> human5 = new HashMap<>();
+        human5.put("name", "Valya");
+        human5.put("age", Integer.MAX_VALUE);
+        schemas.put("password",  new Validator().string().required().contains("ya"));
+        human5.put("password", "yatata");
+        assertFalse(schema.isValid(human5));
     }
 }

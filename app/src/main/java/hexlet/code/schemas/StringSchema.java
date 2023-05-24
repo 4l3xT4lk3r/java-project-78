@@ -5,8 +5,14 @@ import java.util.List;
 import java.util.Objects;
 
 public final class StringSchema extends BaseSchema {
+    private boolean dataCanBeNull = true;
     private int minStringLength = 0;
     private List<String> containsSubstring = new ArrayList<>();
+
+    public StringSchema required() {
+        dataCanBeNull = false;
+        return this;
+    }
 
     public StringSchema minLength(int length) {
         minStringLength = length;
@@ -18,9 +24,9 @@ public final class StringSchema extends BaseSchema {
         return this;
     }
 
-    @Override
+
     public boolean checkDataForNull(Object data) {
-        return (data != null && !data.equals("")) || isDataCanBeNull();
+        return (data != null && !data.equals("")) || dataCanBeNull;
     }
 
     private boolean checkStringForSubstrings(String string) {
