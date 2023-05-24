@@ -4,24 +4,17 @@ import java.util.Objects;
 
 public final class NumberSchema extends BaseSchema {
 
-    private boolean notNull = false;
+    private boolean numberMustBePositive = false;
 
-    private boolean isPositive = false;
-
-    private int[] range;
-
-    public NumberSchema required() {
-        notNull = true;
-        return this;
-    }
+    private int[] withinRange;
 
     public NumberSchema positive() {
-        isPositive = true;
+        numberMustBePositive = true;
         return this;
     }
 
     public NumberSchema range(int minNumber, int maxNumber) {
-        range = new int[]{minNumber, maxNumber};
+        withinRange = new int[]{minNumber, maxNumber};
         return this;
     }
 
@@ -31,27 +24,23 @@ public final class NumberSchema extends BaseSchema {
             return false;
         }
         Integer number = (data == null) ? null : (Integer) data;
-        return checkNull(number) && checkPositive(number) && checkRange(number);
+        return checkDataForNull(number) && checkNumberForPositive(number) && checkNumberForRange(number);
     }
 
-    private boolean checkNull(Integer number) {
-        return !notNull || number != null;
-    }
-
-    private boolean checkPositive(Integer number) {
+    private boolean checkNumberForPositive(Integer number) {
         if (number == null) {
             return true;
         }
-        return isPositive && number > 0;
+        return !numberMustBePositive || number > 0;
     }
 
-    private boolean checkRange(Integer number) {
-        if (range != null && number == null) {
+    private boolean checkNumberForRange(Integer number) {
+        if (withinRange != null && number == null) {
             return false;
-        } else if (range == null) {
+        } else if (withinRange == null) {
             return true;
         }
-        return number >= range[0] && number <= range[1];
+        return number >= withinRange[0] && number <= withinRange[1];
     }
 
 }

@@ -5,23 +5,35 @@ import java.util.List;
 import java.util.Objects;
 
 public final class StringSchema extends BaseSchema {
-    private boolean notNullNotEmpty = false;
-    private int minLength = 0;
-    private List<String> substrings = new ArrayList<>();
-
-    public StringSchema required() {
-        notNullNotEmpty = true;
-        return this;
-    }
+    private int minStringLength = 0;
+    private List<String> containsSubstring = new ArrayList<>();
 
     public StringSchema minLength(int length) {
-        minLength = length;
+        minStringLength = length;
         return this;
     }
 
     public StringSchema contains(String substring) {
-        substrings.add(substring);
+        containsSubstring.add(substring);
         return this;
+    }
+
+    @Override
+    public boolean checkDataForNull(Object data) {
+        return (data != null && !data.equals("")) || isDataCanBeNull();
+    }
+
+    private boolean checkStringForSubstrings(String string) {
+        if (containsSubstring.size() == 0) {
+            return true;
+        }
+        return containsSubstring.stream().allMatch(string::contains);
+    }
+
+
+    private boolean checkStringForMinLength(String string) {
+        int length = (string == null) ? 0 : string.length();
+        return length >= minStringLength;
     }
 
     public boolean isValid(Object data) {
@@ -29,22 +41,6 @@ public final class StringSchema extends BaseSchema {
             return false;
         }
         String string = (data == null) ? null : (String) data;
-        return checkNullAndEmpty(string) && checkMinLength(string) && checkSubstrings(string);
-    }
-
-    private boolean checkSubstrings(String string) {
-        if (substrings.size() == 0) {
-            return true;
-        }
-        return substrings.stream().allMatch(string::contains);
-    }
-
-    private boolean checkNullAndEmpty(String string) {
-        return !notNullNotEmpty || (string != null && !string.equals(""));
-    }
-
-    private boolean checkMinLength(String string) {
-        int length = (string == null) ? 0 : string.length();
-        return length >= minLength;
+        return checkDataForNull(string) && checkStringForMinLength(string) && checkStringForSubstrings(string);
     }
 }

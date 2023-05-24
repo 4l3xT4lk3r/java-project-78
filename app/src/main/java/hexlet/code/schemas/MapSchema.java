@@ -1,25 +1,25 @@
 package hexlet.code.schemas;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Stream;
 
 public final class MapSchema extends BaseSchema {
-
-    private boolean isDataCanBeNull = true;
-
     private int mapSize = -1;
+    private Map<String, BaseSchema> valuesSchemas = new HashMap<>();
 
     @Override
     public boolean isValid(Object data) {
         if (!Objects.isNull(data) && !(data instanceof Map)) {
             return false;
         }
-        Map map = (data == null) ? null : (Map) data;
-        return checkDataNullness(map) && checkMapSize(map);
+        Map<Object, Object> map = (data == null) ? null : (Map) data;
+        return checkDataForNull(map) && checkMapForSize(map) && checkMapValuesForSchemas(map);
     }
 
-    public MapSchema required() {
-        isDataCanBeNull = false;
+    public MapSchema shape(Map<String, BaseSchema> schemas) {
+        this.valuesSchemas = schemas;
         return this;
     }
 
@@ -28,16 +28,24 @@ public final class MapSchema extends BaseSchema {
         return this;
     }
 
-
-    private boolean checkDataNullness(Map data) {
-        return isDataCanBeNull || data != null;
-    }
-
-    private boolean checkMapSize(Map data) {
+    private boolean checkMapForSize(Map<Object, Object> data) {
         if (mapSize == -1) {
             return true;
         }
         int size = (data == null) ? 0 : data.size();
         return size == mapSize;
+    }
+
+    private boolean checkMapValuesForSchemas(Map<Object, Object> data) {
+        if (valuesSchemas.size() == 0) {
+            return true;
+        }
+        for (Map.Entry<String, BaseSchema> entry : valuesSchemas.entrySet()) {
+            boolean res = Stream.of(data).map(m -> m.get(entry.getKey())).allMatch(o -> entry.getValue().isValid(o));
+            if (!res) {
+                return false;
+            }
+        }
+        return true;
     }
 }
