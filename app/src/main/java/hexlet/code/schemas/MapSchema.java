@@ -1,14 +1,10 @@
 package hexlet.code.schemas;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
-import java.util.stream.Stream;
+import java.util.*;
+import java.util.function.Predicate;
 
 public final class MapSchema extends BaseSchema {
-
-    private boolean dataCanBeNull = true;
-    private int mapSize = -1;
+    public List<Predicate<Map>> checks = new ArrayList<>();
     private Map<String, BaseSchema> valuesSchemas = new HashMap<>();
 
     @Override
@@ -16,47 +12,30 @@ public final class MapSchema extends BaseSchema {
         if (!Objects.isNull(data) && !(data instanceof Map)) {
             return false;
         }
+        if (checks.size() == 0) {
+            return true;
+        }
         Map<Object, Object> map = (data == null) ? null : (Map) data;
-        return checkDataForNull(map) && checkMapForSize(map) && checkMapValuesForSchemas(map);
-    }
-
-    public boolean checkDataForNull(Object data) {
-        return dataCanBeNull || data != null;
+        return checks.stream().allMatch(p -> p.test(map));
     }
 
     public MapSchema required() {
-        dataCanBeNull = false;
+        checks.add(Objects::nonNull);
         return this;
     }
 
     public MapSchema shape(Map<String, BaseSchema> schemas) {
-        this.valuesSchemas = schemas;
+        Predicate<Map> p = m -> schemas.entrySet()
+                .stream()
+                .filter(e -> m.containsKey(e.getKey()))
+                .allMatch(e -> e.getValue().isValid(m.get(e.getKey())));
+        checks.add(p);
         return this;
     }
 
     public MapSchema sizeof(int size) {
-        this.mapSize = size;
+        checks.add(m -> m.size() == size);
         return this;
     }
 
-    private boolean checkMapForSize(Map<Object, Object> data) {
-        if (mapSize == -1) {
-            return true;
-        }
-        int size = (data == null) ? 0 : data.size();
-        return size == mapSize;
-    }
-
-    private boolean checkMapValuesForSchemas(Map<Object, Object> data) {
-        if (valuesSchemas.size() == 0) {
-            return true;
-        }
-        for (Map.Entry<String, BaseSchema> entry : valuesSchemas.entrySet()) {
-            boolean res = Stream.of(data).map(m -> m.get(entry.getKey())).allMatch(o -> entry.getValue().isValid(o));
-            if (!res) {
-                return false;
-            }
-        }
-        return true;
-    }
 }

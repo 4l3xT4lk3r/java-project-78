@@ -3,50 +3,36 @@ package hexlet.code.schemas;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Predicate;
+
 
 public final class StringSchema extends BaseSchema {
-    private boolean dataCanBeNull = true;
-    private int minStringLength = 0;
-    private List<String> containsSubstring = new ArrayList<>();
+    public List<Predicate<String>> checks = new ArrayList<>();
 
-    public StringSchema required() {
-        dataCanBeNull = false;
-        return this;
+    @Override
+    public boolean isValid(Object data) {
+        if (  ! ( data instanceof String) && ! Objects.isNull(data)){
+            return false;
+        }
+        if ( checks.size() == 0 ){
+            return true;
+        }
+        return checks.stream().allMatch(p->p.test((String) data));
     }
 
+    public StringSchema required() {
+        checks.add(Objects::nonNull);
+        checks.add(s->!s.equals(""));
+        return this;
+    }
     public StringSchema minLength(int length) {
-        minStringLength = length;
+        checks.add(s->s.length()>=length);
         return this;
     }
 
     public StringSchema contains(String substring) {
-        containsSubstring.add(substring);
+        checks.add(s->s.contains(substring));
         return this;
     }
-
-
-    public boolean checkDataForNull(Object data) {
-        return (data != null && !data.equals("")) || dataCanBeNull;
-    }
-
-    private boolean checkStringForSubstrings(String string) {
-        if (containsSubstring.size() == 0) {
-            return true;
-        }
-        return containsSubstring.stream().allMatch(string::contains);
-    }
-
-
-    private boolean checkStringForMinLength(String string) {
-        int length = (string == null) ? 0 : string.length();
-        return length >= minStringLength;
-    }
-
-    public boolean isValid(Object data) {
-        if (!Objects.isNull(data) && !(data instanceof String)) {
-            return false;
-        }
-        String string = (data == null) ? null : (String) data;
-        return checkDataForNull(string) && checkStringForMinLength(string) && checkStringForSubstrings(string);
-    }
 }
+

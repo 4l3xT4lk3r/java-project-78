@@ -21,9 +21,9 @@ public class StringSchemaTest {
         assertTrue(schema.isValid("hexlet"));
         assertTrue(schema.contains("wh").isValid("what does the fox say"));
         assertTrue(schema.contains("what").isValid("what does the fox say"));
-        assertFalse(schema.minLength(Byte.MAX_VALUE).isValid("what does the fox say"));
         assertTrue(schema.minLength(Byte.SIZE).isValid("what does the fox say"));
         assertFalse(schema.contains("whatthe").isValid("what does the fox say"));
         assertFalse(schema.isValid("what does the fox say"));
+        assertFalse(schema.minLength(Byte.MAX_VALUE).isValid("what does the fox say"));
     }
 }

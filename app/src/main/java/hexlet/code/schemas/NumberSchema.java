@@ -1,31 +1,26 @@
 package hexlet.code.schemas;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
+import java.util.function.Predicate;
 
 public final class NumberSchema extends BaseSchema {
 
-    private boolean dataCanBeNull = true;
-
-    private boolean numberMustBePositive = false;
-
-    private int[] withinRange;
+    public List<Predicate<Integer>> checks = new ArrayList<>();
 
     public NumberSchema positive() {
-        numberMustBePositive = true;
+        checks.add(i -> Objects.isNull(i) || i > 0);
         return this;
     }
 
     public NumberSchema required() {
-        dataCanBeNull = false;
+        checks.add(Objects::nonNull);
         return this;
     }
 
-    public boolean checkDataForNull(Object data) {
-        return dataCanBeNull || data != null;
-    }
-
     public NumberSchema range(int minNumber, int maxNumber) {
-        withinRange = new int[]{minNumber, maxNumber};
+        checks.add(i -> Objects.nonNull(i) && i >= minNumber && i <= maxNumber);
         return this;
     }
 
@@ -34,24 +29,11 @@ public final class NumberSchema extends BaseSchema {
         if (!Objects.isNull(data) && !(data instanceof Integer)) {
             return false;
         }
+        if (checks.size() == 0) {
+            return true;
+        }
         Integer number = (data == null) ? null : (Integer) data;
-        return checkDataForNull(number) && checkNumberForPositive(number) && checkNumberForRange(number);
-    }
-
-    private boolean checkNumberForPositive(Integer number) {
-        if (number == null) {
-            return true;
-        }
-        return !numberMustBePositive || number > 0;
-    }
-
-    private boolean checkNumberForRange(Integer number) {
-        if (withinRange != null && number == null) {
-            return false;
-        } else if (withinRange == null) {
-            return true;
-        }
-        return number >= withinRange[0] && number <= withinRange[1];
+        return checks.stream().allMatch(p -> p.test(number));
     }
 
 }
