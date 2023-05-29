@@ -12,7 +12,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class MapSchemaTest {
     @Test
-    public void testMapSchemaForNull() {
+    public void testMapSchema() {
         MapSchema schema = new Validator().map();
         assertTrue(schema.isValid(null));
         schema.required();

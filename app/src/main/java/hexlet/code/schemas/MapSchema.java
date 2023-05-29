@@ -1,12 +1,13 @@
 package hexlet.code.schemas;
 
-import java.util.*;
+import java.util.Map;
+import java.util.Objects;
+import java.util.List;
+import java.util.ArrayList;
 import java.util.function.Predicate;
 
 public final class MapSchema extends BaseSchema {
-    public List<Predicate<Map>> checks = new ArrayList<>();
-    private Map<String, BaseSchema> valuesSchemas = new HashMap<>();
-
+    private List<Predicate<Map>> checks = new ArrayList<>();
     @Override
     public boolean isValid(Object data) {
         if (!Objects.isNull(data) && !(data instanceof Map)) {

@@ -7,7 +7,7 @@ import java.util.function.Predicate;
 
 public final class NumberSchema extends BaseSchema {
 
-    public List<Predicate<Integer>> checks = new ArrayList<>();
+    private List<Predicate<Integer>> checks = new ArrayList<>();
 
     public NumberSchema positive() {
         checks.add(i -> Objects.isNull(i) || i > 0);
