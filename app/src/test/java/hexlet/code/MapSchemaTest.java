@@ -2,6 +2,7 @@ package hexlet.code;
 
 import hexlet.code.schemas.BaseSchema;
 import hexlet.code.schemas.MapSchema;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
@@ -10,14 +11,27 @@ import java.util.Map;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class MapSchemaTest {
+public final class MapSchemaTest {
+    private static MapSchema schema;
+
+    @BeforeEach
+    public void init() {
+        schema = new Validator().map();
+    }
+
     @Test
-    public void testMapSchema() {
-        MapSchema schema = new Validator().map();
+    public void testMapSchemaCanBeNull() {
         assertTrue(schema.isValid(null));
+    }
+
+    @Test
+    public void testMapSchemaCanNotBeNull() {
         schema.required();
         assertFalse(schema.isValid(null));
+    }
 
+    @Test
+    public void testMapSchemaCertainSize() {
         assertTrue(schema.isValid(new HashMap<>()));
         Map<String, String> data = new HashMap<>();
         data.put("key1", "value1");
@@ -26,7 +40,10 @@ public class MapSchemaTest {
         assertFalse(schema.isValid(data));
         data.put("key2", "value2");
         assertTrue(schema.isValid(data));
+    }
 
+    @Test
+    public void testMapSchemaValidShapes() {
         Map<String, BaseSchema> schemas = new HashMap<>();
         schema.shape(schemas);
         schemas.put("name", new Validator().string().required());
@@ -55,8 +72,8 @@ public class MapSchemaTest {
         Map<String, Object> human5 = new HashMap<>();
         human5.put("name", "Valya");
         human5.put("age", Integer.MAX_VALUE);
-        schemas.put("password",  new Validator().string().required().contains("ya"));
+        schemas.put("password", new Validator().string().required().contains("ya"));
         human5.put("password", "yatata");
-        assertFalse(schema.isValid(human5));
+        assertTrue(schema.isValid(human5));
     }
 }
