@@ -1,39 +1,26 @@
 package hexlet.code.schemas;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
-import java.util.function.Predicate;
 
 public final class NumberSchema extends BaseSchema {
 
-    private List<Predicate<Integer>> checks = new ArrayList<>();
+    public NumberSchema() {
+        addCheck((s -> Objects.isNull(s) || s instanceof Integer));
+    }
 
     public NumberSchema positive() {
-        checks.add(i -> Objects.isNull(i) || i > 0);
+        addCheck(i -> Objects.isNull(i) || (Integer) i > 0);
         return this;
     }
 
     public NumberSchema required() {
-        checks.add(Objects::nonNull);
+        addCheck(Objects::nonNull);
         return this;
     }
 
     public NumberSchema range(int minNumber, int maxNumber) {
-        checks.add(i -> Objects.nonNull(i) && i >= minNumber && i <= maxNumber);
+        addCheck(i -> Objects.nonNull(i) && (Integer) i >= minNumber && (Integer) i <= maxNumber);
         return this;
-    }
-
-    @Override
-    public boolean isValid(Object data) {
-        if (!Objects.isNull(data) && !(data instanceof Integer)) {
-            return false;
-        }
-        if (checks.size() == 0) {
-            return true;
-        }
-        Integer number = (data == null) ? null : (Integer) data;
-        return checks.stream().allMatch(p -> p.test(number));
     }
 
 }
