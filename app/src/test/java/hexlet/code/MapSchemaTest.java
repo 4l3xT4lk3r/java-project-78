@@ -22,6 +22,7 @@ public final class MapSchemaTest {
     @Test
     public void testMapSchemaCanBeNull() {
         assertTrue(schema.isValid(null));
+        assertFalse(schema.sizeof(2).isValid(null));
     }
 
     @Test
@@ -46,6 +47,7 @@ public final class MapSchemaTest {
     public void testMapSchemaValidShapes() {
         Map<String, BaseSchema> schemas = new HashMap<>();
         schema.shape(schemas);
+
         schemas.put("name", new Validator().string().required());
         schemas.put("age", new Validator().number().positive());
 
@@ -75,5 +77,14 @@ public final class MapSchemaTest {
         schemas.put("password", new Validator().string().required().contains("ya"));
         human5.put("password", "yatata");
         assertTrue(schema.isValid(human5));
+    }
+
+    @Test
+    public void testMapSchemaNullShapes() {
+        schema.shape(null);
+        assertFalse(schema.isValid(null));
+        Map<String, Object> kernel = new HashMap<>();
+        kernel.put("version", "5.4");
+        assertFalse(schema.isValid(kernel));
     }
 }

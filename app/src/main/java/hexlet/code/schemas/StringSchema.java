@@ -14,12 +14,12 @@ public final class StringSchema extends BaseSchema {
     }
 
     public StringSchema minLength(int length) {
-        addCheck(s -> ((String) s).length() >= length);
+        addCheck(s -> Objects.nonNull(s) && ((String) s).length() >= length);
         return this;
     }
 
     public StringSchema contains(String substring) {
-        addCheck(s -> ((String) s).contains(substring));
+        addCheck(s -> Objects.nonNull(s) && ((String) s).contains(substring));
         return this;
     }
 }
