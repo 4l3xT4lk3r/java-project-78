@@ -14,7 +14,7 @@ public final class NumberSchema extends BaseSchema {
     }
 
     public NumberSchema required() {
-        addCheck(Objects::nonNull);
+        super.required();
         return this;
     }
 

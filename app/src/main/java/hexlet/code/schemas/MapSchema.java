@@ -10,7 +10,7 @@ public final class MapSchema extends BaseSchema {
     }
 
     public MapSchema required() {
-        addCheck(Objects::nonNull);
+        super.required();
         return this;
     }
 

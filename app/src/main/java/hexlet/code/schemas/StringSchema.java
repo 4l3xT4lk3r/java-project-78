@@ -8,7 +8,7 @@ public final class StringSchema extends BaseSchema {
     }
 
     public StringSchema required() {
-        addCheck(Objects::nonNull);
+        super.required();
         addCheck(s -> !s.equals(""));
         return this;
     }
