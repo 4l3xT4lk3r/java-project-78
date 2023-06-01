@@ -16,9 +16,6 @@ public abstract class BaseSchema {
     }
 
     public final boolean isValid(Object data) {
-        if (getChecks().size() == 0) {
-            return true;
-        }
         return getChecks().stream().allMatch(p -> p.test(data));
     }
 
