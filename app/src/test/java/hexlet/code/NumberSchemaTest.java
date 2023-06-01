@@ -36,7 +36,7 @@ public final class NumberSchemaTest {
     @Test
     public void testNumberSchemaRange() {
         assertTrue(schema.isValid(Integer.MAX_VALUE));
-        schema.range(Integer.BYTES, Integer.SIZE);
+        schema.required().range(Integer.BYTES, Integer.SIZE);
         assertTrue(schema.isValid(Integer.BYTES));
         assertTrue(schema.isValid(Integer.SIZE));
         assertFalse(schema.isValid(Long.SIZE));
