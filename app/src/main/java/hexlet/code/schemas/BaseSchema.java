@@ -7,7 +7,7 @@ import java.util.function.Predicate;
 public abstract class BaseSchema {
     private final List<Predicate<Object>> checks = new ArrayList<>();
 
-    public final void addCheck(Predicate<Object> predicate) {
+    final void addCheck(Predicate<Object> predicate) {
         checks.add(predicate);
     }
 
