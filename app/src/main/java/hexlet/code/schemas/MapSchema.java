@@ -15,7 +15,7 @@ public final class MapSchema extends BaseSchema {
     }
 
     public MapSchema shape(Map<String, BaseSchema> schemas) {
-        addCheck(m -> Objects.nonNull(m) && Objects.nonNull(schemas) && schemas.entrySet()
+        addCheck(m -> Objects.isNull(m) || Objects.isNull(schemas) || schemas.entrySet()
                 .stream()
                 .filter(e -> ((Map) m).containsKey(e.getKey()))
                 .allMatch(e -> e.getValue().isValid(((Map) m).get(e.getKey()))));
@@ -23,7 +23,7 @@ public final class MapSchema extends BaseSchema {
     }
 
     public MapSchema sizeof(int size) {
-        addCheck(m -> Objects.nonNull(m) && ((Map) m).size() == size);
+        addCheck(m -> Objects.isNull(m) || ((Map) m).size() == size);
         return this;
     }
 

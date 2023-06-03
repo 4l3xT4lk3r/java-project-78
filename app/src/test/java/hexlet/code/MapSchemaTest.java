@@ -22,7 +22,7 @@ public final class MapSchemaTest {
     @Test
     public void testMapSchemaCanBeNull() {
         assertTrue(schema.isValid(null));
-        assertFalse(schema.sizeof(2).isValid(null));
+        assertTrue(schema.sizeof(2).isValid(null));
     }
 
     @Test
@@ -82,9 +82,9 @@ public final class MapSchemaTest {
     @Test
     public void testMapSchemaNullShapes() {
         schema.shape(null);
-        assertFalse(schema.isValid(null));
+        assertTrue(schema.isValid(null));
         Map<String, Object> kernel = new HashMap<>();
         kernel.put("version", "5.4");
-        assertFalse(schema.isValid(kernel));
+        assertTrue(schema.isValid(kernel));
     }
 }

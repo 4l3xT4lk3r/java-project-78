@@ -19,7 +19,7 @@ public final class NumberSchema extends BaseSchema {
     }
 
     public NumberSchema range(int minNumber, int maxNumber) {
-        addCheck(i -> Objects.nonNull(i) && (Integer) i >= minNumber && (Integer) i <= maxNumber);
+        addCheck(i -> Objects.isNull(i) || (Integer) i >= minNumber && (Integer) i <= maxNumber);
         return this;
     }
 
